@@ -12,7 +12,7 @@
     </tr>
   </table>
 
-  <form class="form-container" action="">
+  <form class="form-container" onsubmit="return validateForm()" method="post" action="">
     <label for="name">
       <input id="name" type="text" placeholder="Name of Food"  aria-required="true">
     </label>
@@ -24,6 +24,6 @@
   <script
     src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'>
   </script>
-  <script src="lib/index.js"></script>
+  <script src="main.bundle.js"></script>
 </body>
 </html>
