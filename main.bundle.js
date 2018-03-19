@@ -46,10 +46,48 @@
 
 	'use strict';
 
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+	var validateForm = function validateForm() {
+	  removeValidations();
+	  var name = $('#name').val();
+	  var calories = $('#calories').val();
+	  if (name === "" && calories === "") {
+	    $('.form-container').append('<p class="validation">Please enter a food name</p>');
+	    $('.form-container').append('<p class="validation">Please enter a calorie amount</p>');
+	    return false;
+	  } else if (name === "") {
+	    $('.form-container').append('<p class="validation">Please enter a food name</p>');
+	    return false;
+	  } else if (calories === "") {
+	    $('.form-container').append('<p class="validation">Please enter a calorie amount</p>');
+	    return false;
+	  }
+	};
+
+	var handleResponse = function handleResponse(response) {
+	  return response.json().then(function (json) {
+	    if (!response.ok) {
+	      var error = {
+	        status: response.status,
+	        statusText: response.statusText,
+	        json: json
+	      };
+	      return Promise.reject(error);
+	      debugger;
+	    }
+	    return json;
+	  });
+	};
+
+	var removeValidations = function removeValidations() {
+	  $('.validation').remove();
+	};
+
 	var getAllFoods = function getAllFoods() {
 	  $('#all-foods').html('<tr><th>Food</th><th>Calories</th></tr>');
 	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/foods').then(function (response) {
-	    return response.json();
+	    return handleResponse(response);
 	  }).then(function (foods) {
 	    return getEachFood(foods);
 	  }).catch(function (error) {
@@ -57,22 +95,38 @@
 	  });
 	};
 
+	var getAllFoodsDiary = function getAllFoodsDiary() {
+	  $('#all-foods-diary').html('<tr><th>Food</th><th>Calories</th></tr>');
+	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/foods').then(function (response) {
+	    return handleResponse(response);
+	  }).then(function (foods) {
+	    return getEachFoodDiary(foods);
+	  }).catch(function (error) {
+	    return console.error({ error: error });
+	  });
+	};
+
 	var getEachFood = function getEachFood(foods) {
 	  var sortedFoods = foods.sort(function (a, b) {
-	    if (a.id > b.id) {
-	      return -1;
-	    } else {
-	      return 1;
-	    }
+	    return a.id > b.id ? -1 : 1;
 	  });
 	  sortedFoods.forEach(function (food) {
-	    $('#all-foods').append('<tr>\n        <td>' + food.name + '</td>\n        <td>' + food.calories + '</td>\n        <td><button id="' + food.id + '" class="delete-btn" aria-label="Delete">\n          Delete\n        </button></td>\n      </tr>');
+	    $('#all-foods').append('<tr id="' + food.id + '">\n        <td class="name" id="food-' + food.id + '">' + food.name + '</td>\n        <td class="calories" id="cal-' + food.id + '">' + food.calories + '</td>\n        <td><button class="delete-btn" aria-label="Delete">\n          Delete\n        </button></td>\n      </tr>');
+	  });
+	};
+	var getEachFoodDiary = function getEachFoodDiary(foods) {
+	  var sortedFoods = foods.sort(function (a, b) {
+	    return a.id > b.id ? -1 : 1;
+	  });
+	  sortedFoods.forEach(function (food) {
+	    $('#all-foods-diary').append('<tr id="' + food.id + '">\n        <td><input type="checkbox"></td>\n        <td class="name" id="food-' + food.id + '">' + food.name + '</td>\n        <td class="calories" id="cal-' + food.id + '">' + food.calories + '</td>\n      </tr>');
 	  });
 	};
 
 	var removeFood = function removeFood(event) {
-	  event.target.parentNode.parentNode.remove();
-	  deleteFood(event.target.id);
+	  var tr = event.target.parentNode.parentNode;
+	  tr.remove();
+	  deleteFood(tr.id);
 	};
 
 	var deleteFood = function deleteFood(id) {
@@ -86,7 +140,13 @@
 	  var name = $('#name').val();
 	  var calories = $('#calories').val();
 
-	  postFood({ name: name, calories: calories });
+	  if (validateForm(name, calories) != false) {
+	    postFood({ name: name, calories: calories });
+	  }
+	};
+
+	var clearPostForm = function clearPostForm() {
+	  $('.form-container')[0].reset();
 	};
 
 	var postConfig = function postConfig(body) {
@@ -99,15 +159,124 @@
 
 	var postFood = function postFood(body) {
 	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/foods', postConfig(body)).then(function (response) {
-	    return response.json();
+	    return handleResponse(response);
+	  }).then(function () {
+	    return removeValidations();
 	  }).then(function () {
 	    return getAllFoods();
+	  }).then(function () {
+	    return clearPostForm();
 	  }).catch(function (error) {
 	    return console.error({ error: error });
 	  });
 	};
 
+	var createInputField = function createInputField(event) {
+	  event.preventDefault();
+	  var $input = $(event.target);
+	  var type = $input.attr("class");
+	  $input.html('<input class="' + type + '" type="text" placeholder=' + event.target.innerHTML + '  value="' + event.target.innerHTML + '"aria-required="true">');
+	};
+
+	var removeInputField = function removeInputField(event) {
+	  var id = event.target.parentNode.parentNode.id;
+	  $(event.target.closest("td")).html(event.target.value);
+	  updateFood(_defineProperty({}, $(event.target).attr("class"), event.target.value), id);
+	};
+
+	var updateFood = function updateFood(body, id) {
+	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/foods/' + id, patchConfig(body)).then(function (response) {
+	    return handleResponse(response);
+	  }).catch(function (error) {
+	    return console.error({ error: error });
+	  });
+	};
+
+	var patchConfig = function patchConfig(body) {
+	  return {
+	    method: 'PATCH',
+	    headers: { 'Content-Type': 'application/json' },
+	    body: JSON.stringify(body)
+	  };
+	};
+
+	var filterFoods = function filterFoods() {
+	  $('.filter').on('keydown', function () {
+	    var value = $(this).val().toLowerCase();
+	    $('td.name').filter(function () {
+	      $(this.parentNode).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+	    });
+	  });
+	};
+
+	var getAllMeals = function getAllMeals() {
+	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/meals').then(function (response) {
+	    return handleResponse(response);
+	  }).then(function (meals) {
+	    return appendMeals(meals);
+	  }).catch(function (error) {
+	    return console.error({ error: error });
+	  });
+	};
+
+	var appendMeals = function appendMeals(meals) {
+	  var dayTotalCal = 0;
+	  meals.forEach(function (meal) {
+	    var name = meal.name.toLowerCase();
+	    var mealTotalCal = 0;
+	    meal["foods"].forEach(function (food) {
+	      $('#' + name).append('<tr class="' + food.id + '">\n      <td class="name" class="food-' + food.id + '">' + food.name + '</td>\n      <td class="calories" class="cal-' + food.id + '">' + food.calories + '</td>\n      <td><button class="delete-btn" aria-label="Delete">\n      Delete\n      </button></td>\n      </tr>');
+	      mealTotalCal += food.calories;
+	    });
+	    dayTotalCal += mealTotalCal;
+	    mealTotalCalories(name, mealTotalCal);
+	    remainingCalories(name, mealTotalCal);
+	  });
+	  dayTotalCalories(dayTotalCal);
+	};
+
+	var mealTotalCalories = function mealTotalCalories(tableName, total) {
+	  $('#' + tableName).append('<tr>\n  <td>Total Calories</td>\n  <td>' + total + '</td>\n  </tr>');
+	};
+
+	var dayTotalCalories = function dayTotalCalories(total) {
+	  var type = void 0;
+	  if (2000 - total < 0) {
+	    type = "negative";
+	  } else {
+	    type = "positive";
+	  }
+	  $('#meal-totals').append('<tr>\n  <td>Goal Calories</td>\n  <td>2000</td>\n  </tr>\n  <tr>\n  <td>Calories Consumed</td>\n  <td>' + total + '</td>\n  </tr>\n  <tr>\n  <td>Remaining Calories</td>\n  <td class="' + type + '">' + (2000 - total) + '</td>\n  </tr>');
+	};
+
+	var remainingCalories = function remainingCalories(tableName, total) {
+	  var type = void 0;
+	  var goal = void 0;
+	  if (tableName === "breakfast") {
+	    goal = 400;
+	  } else if (tableName === "lunch") {
+	    goal = 600;
+	  } else if (tableName === "snack") {
+	    goal = 200;
+	  } else if (tableName === "dinner") {
+	    goal = 800;
+	  }
+	  if (goal - total < 0) {
+	    type = "negative";
+	  } else {
+	    type = "positive";
+	  }
+	  $('#' + tableName).append('<tr>\n    <td>Remaining Calories</td>\n    <td class="' + type + '">' + (goal - total) + '</td>\n  </tr>');
+	};
+
 	getAllFoods();
+	getAllFoodsDiary();
+	filterFoods();
+	getAllMeals();
+
+	$('#all-foods').on('focusout', removeInputField);
+	$('#all-foods').on('click', 'tr td.name', createInputField);
+	$('#all-foods').on('click', 'tr td.calories', createInputField);
 
 	$('#add-food-btn').on('click', createFood);
 
