@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-us" role="main">
 <head>
   <meta charset="utf-8">
   <title>Quantified Self - Manage Foods</title>
+  <link rel="stylesheet" href="lib/styles.css">
 </head>
 <body>
   <form action="">
-    <input class="filter" type="text" name="search">
+    <input class="filter" type="text" name="search" placeholder="Search by name.." aria-label="search for foods">
   </form>
-  <div class="label">Filter by Name</div><br>
+
   <table id="all-foods">
     <tr>
       <th>Food</th>
@@ -18,10 +19,10 @@
 
   <form class="form-container" method="post" action="">
     <label for="name">
-      <input id="name" type="text" placeholder="Name of Food"  aria-required="true">
+      <input id="name" type="text" placeholder="Name of Food"  aria-required="true" aria-label="create food">
     </label>
     <label for="calories">
-      <input id="calories" type="text" placeholder="Calories of Food"  aria-required="true">
+      <input id="calories" type="text" placeholder="Calories of Food"  aria-required="true" aria-label="create food">
     </label>
     <button id="add-food-btn" aria-label="Add Food">Add Food</button>
   </form>
