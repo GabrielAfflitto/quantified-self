@@ -56,15 +56,15 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.deleteMealFood = exports.handleResponse = undefined;
+	exports.handleResponse = undefined;
 
 	var _domIndex = __webpack_require__(2);
 
-	var _domFoods = __webpack_require__(3);
+	var _domFoods = __webpack_require__(4);
 
-	var _serviceFoods = __webpack_require__(4);
+	var _serviceFoods = __webpack_require__(5);
 
-	var _serviceIndex = __webpack_require__(5);
+	var _serviceIndex = __webpack_require__(3);
 
 	var handleResponse = exports.handleResponse = function handleResponse(response) {
 	  return response.json().then(function (json) {
@@ -81,62 +81,25 @@
 	  });
 	};
 
-	var createFood = function createFood(event) {
-	  event.preventDefault();
-	  var name = $('#name').val();
-	  var calories = $('#calories').val();
-
-	  if ((0, _domFoods.validateForm)(name, calories) != false) {
-	    (0, _serviceFoods.postFood)({ name: name, calories: calories });
-	  }
-	};
-
-	var getAllFoods = function getAllFoods(meals) {
-	  $('#all-foods').html('<tr><th>Food</th><th>Calories</th></tr>');
-	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/foods').then(function (response) {
-	    return handleResponse(response);
-	  }).then(function (foods) {
-	    return getEachFood(meals, foods);
-	  }).catch(function (error) {
-	    return console.error({ error: error });
-	  });
-	};
-
-	var getAllFoodsValidation = function getAllFoodsValidation() {
-	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/meals').then(function (response) {
-	    return handleResponse(response);
-	  }).then(function (meals) {
-	    return getAllFoods(meals);
-	  }).catch(function (error) {
-	    return console.error({ error: error });
-	  });
-	};
-
-	var getEachFood = function getEachFood(meals, foods) {
-	  var sortedFoods = foods.sort(function (a, b) {
-	    return a.id > b.id ? -1 : 1;
-	  });
-	};
-
 	(0, _serviceFoods.getAllFoodsValidation)();
 	(0, _serviceIndex.getAllFoodsDiary)();
 	(0, _domIndex.filterFoods)();
-	getAllMeals();
+	(0, _serviceIndex.getAllMeals)();
 
 	$('#all-foods').on('focusout', _domFoods.removeInputField);
 	$('#all-foods').on('click', 'tr td.name', _domFoods.createInputField);
 	$('#all-foods').on('click', 'tr td.calories', _domFoods.createInputField);
 
-	$('#add-food-btn').on('click', createFood);
+	$('#add-food-btn').on('click', _serviceFoods.createFood);
 
 	$('#all-foods-diary').on('click', '.sort', _serviceIndex.countIncrement);
 	$('#all-meals').on('click', '.delete-mealFood', _domIndex.removeMealFood);
 	$('#all-foods').on('click', '.delete-btn', _domFoods.removeFood);
 
-	$('#meal-1').on('click', createFoodInMeal);
-	$('#meal-2').on('click', createFoodInMeal);
-	$('#meal-3').on('click', createFoodInMeal);
-	$('#meal-4').on('click', createFoodInMeal);
+	$('#meal-1').on('click', _domIndex.createFoodInMeal);
+	$('#meal-2').on('click', _domIndex.createFoodInMeal);
+	$('#meal-3').on('click', _domIndex.createFoodInMeal);
+	$('#meal-4').on('click', _domIndex.createFoodInMeal);
 
 /***/ }),
 /* 2 */
@@ -147,9 +110,9 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.removeMealFood = exports.filterFoods = exports.getEachFoodDiary = exports.appendMeals = undefined;
+	exports.createFoodInMeal = exports.removeMealFood = exports.filterFoods = exports.getEachFoodDiary = exports.appendMeals = undefined;
 
-	var _index = __webpack_require__(1);
+	var _serviceIndex = __webpack_require__(3);
 
 	var mealCalories = {
 	  "breakfast": 400,
@@ -175,7 +138,7 @@
 	var dayTotalCalories = function dayTotalCalories(total) {
 	  var type = remainingCaloriesClassType(2000, total);
 	  $("#meal-totals").html('');
-	  $("#meal-totals").append("<tr>\n  <td>Goal Calories</td>\n  <td>2000</td>\n  </tr>\n  <tr>\n  <td>Calories Consumed</td>\n  <td>" + total + "</td>\n  </tr>\n  <tr>\n  <td>Remaining Calories</td>\n  <td class=\"" + type + "\">" + (2000 - total) + "</td>\n  </tr>");
+	  $("#meal-totals").append("\n    <tr><th></th><th>Calories</th></tr>\n  <tr>\n  <td>Goal Calories</td>\n  <td>2000</td>\n  </tr>\n  <tr>\n  <td>Calories Consumed</td>\n  <td>" + total + "</td>\n  </tr>\n  <tr>\n  <td>Remaining Calories</td>\n  <td class=\"" + type + "\">" + (2000 - total) + "</td>\n  </tr>");
 	};
 
 	var mealTotalCalories = function mealTotalCalories(tableName, total) {
@@ -194,7 +157,8 @@
 	  appendMealsTableHead();
 	  meals.forEach(function (meal) {
 	    meal["foods"].forEach(function (food) {
-	      foodsInMeals.push(food.id);
+	      $("#" + name).append("<tr class=\"" + food.id + "\">\n      <td class=\"food-" + food.id + "\">" + food.name + "</td>\n      <td class=\"calories\" class=\"cal-" + food.id + "\">" + food.calories + "</td>\n      <td><button class=\"delete-mealFood\" aria-label=\"Delete\">\n        <img src=\"assets/trashhhh.png\" alt=\"delete button\">\n      </button></td>\n      </tr>");
+	      mealTotalCal += food.calories;
 	    });
 	  });
 	  sortedFoods.forEach(function (food) {
@@ -233,6 +197,175 @@
 	      return a.id > b.id ? -1 : 1;
 	    });
 	  }
+	};
+
+	var getEachFoodDiary = exports.getEachFoodDiary = function getEachFoodDiary(count, foods) {
+	  var sortedFoods = determineSortedFoods(count, foods);
+	  sortedFoods.forEach(function (food) {
+	    $('#all-foods-diary').append("<tr id=\"" + food.id + "\">\n        <td class=\"name\" id=\"food-" + food.id + "\">" + food.name + "</td>\n        <td class=\"calories\" id=\"cal-" + food.id + "\">" + food.calories + "</td>\n        <td><input type=\"checkbox\" aria-label=\"check for foods\"></td>\n      </tr>");
+	  });
+	};
+
+	var filterFoods = exports.filterFoods = function filterFoods() {
+	  $('.filter').on('keydown', function () {
+	    var value = $(this).val().toLowerCase();
+	    $('td.name').filter(function () {
+	      $(this.parentNode).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+	    });
+	  });
+	};
+
+	var removeMealFood = exports.removeMealFood = function removeMealFood(event) {
+	  var $tr = event.target.parentNode.parentNode;
+	  var mealId = event.target.parentNode.parentNode.parentNode.parentNode.className.slice(-1);
+	  $tr.remove();
+	  (0, _serviceIndex.deleteMealFood)($tr.className, mealId);
+	};
+
+	var createFoodInMeal = exports.createFoodInMeal = function createFoodInMeal(event) {
+	  event.preventDefault();
+	  var mealId = event.target.id.slice(-1);
+	  $('#all-foods-diary tr').each(function (index, row) {
+	    if (index != 0 && $(row).find(':checkbox:checked').length === 1) {
+	      var foodId = parseInt(row.id);
+	      (0, _serviceIndex.postFoodToMeal)(mealId, foodId);
+	    }
+	  });
+	  $('input[type=checkbox]').prop('checked', false);
+	};
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.deleteMealFood = exports.postFoodToMeal = exports.getAllMeals = exports.countIncrement = exports.getAllFoodsDiary = undefined;
+
+	var _domIndex = __webpack_require__(2);
+
+	var _index = __webpack_require__(1);
+
+	var getAllFoodsDiary = exports.getAllFoodsDiary = function getAllFoodsDiary() {
+	  $('#all-foods-diary').html('<tr><th>Food</th><th class=sort>Calories</th></tr>');
+	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/foods').then(function (response) {
+	    return (0, _index.handleResponse)(response);
+	  }).then(function (foods) {
+	    return (0, _domIndex.getEachFoodDiary)(count, foods);
+	  }).catch(function (error) {
+	    return console.error({ error: error });
+	  });
+	};
+
+	var count = 0;
+
+	var countIncrement = exports.countIncrement = function countIncrement() {
+	  count++;
+	  if (count > 2) {
+	    count = 0;
+	  }
+	  getAllFoodsDiary();
+	};
+
+	var getAllMeals = exports.getAllMeals = function getAllMeals() {
+	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/meals').then(function (response) {
+	    return (0, _index.handleResponse)(response);
+	  }).then(function (meals) {
+	    return (0, _domIndex.appendMeals)(meals);
+	  }).catch(function (error) {
+	    return console.error({ error: error });
+	  });
+	};
+
+	var postFoodToMeal = exports.postFoodToMeal = function postFoodToMeal(mealId, foodId) {
+	  fetch('http://quantifiedself-backend.herokuapp.com/api/v1/meals/' + mealId + '/foods/' + foodId, postMealConfig()).then(function () {
+	    return getAllMeals();
+	  }).catch(function (error) {
+	    return console.error({ error: error });
+	  });
+	};
+
+	var postMealConfig = function postMealConfig() {
+	  return {
+	    method: 'POST',
+	    headers: { 'Content-Type': 'application/json' }
+	  };
+	};
+
+	var deleteMealFood = exports.deleteMealFood = function deleteMealFood(foodId, mealId) {
+	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/meals/' + mealId + '/foods/' + foodId, { method: 'DELETE' }).then(function () {
+	    return getAllMeals();
+	  }).catch(function (error) {
+	    return console.error({ error: error });
+	  });
+	};
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.removeInputField = exports.createInputField = exports.clearPostForm = exports.removeFood = exports.getEachFood = exports.removeValidations = exports.validateForm = undefined;
+
+	var _serviceFoods = __webpack_require__(5);
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+	var validateForm = exports.validateForm = function validateForm() {
+	  removeValidations();
+	  var name = $('#name').val();
+	  var calories = $('#calories').val();
+	  if (name === "" && calories === "") {
+	    $('.form-container').append('<p class="validation">Please enter a food name</p>');
+	    $('.form-container').append('<p class="validation">Please enter a calorie amount</p>');
+	    return false;
+	  } else if (name === "") {
+	    $('.form-container').append('<p class="validation">Please enter a food name</p>');
+	    return false;
+	  } else if (calories === "") {
+	    $('.form-container').append('<p class="validation">Please enter a calorie amount</p>');
+	    return false;
+	  }
+	};
+
+	var removeValidations = exports.removeValidations = function removeValidations() {
+	  $('.validation').remove();
+	};
+
+	var getFoodsInMeals = function getFoodsInMeals(meals) {
+	  var foodsInMeals = [];
+	  meals.forEach(function (meal) {
+	    meal["foods"].forEach(function (food) {
+	      foodsInMeals.push(food.id);
+	    });
+	  });
+	  return foodsInMeals;
+	};
+
+	var sortFoods = function sortFoods(foods) {
+	  return foods.sort(function (a, b) {
+	    return a.id > b.id ? -1 : 1;
+	  });
+	};
+
+	var foodAppendWithRegularDelete = function foodAppendWithRegularDelete(food) {
+	  $('#all-foods').append('<tr id="' + food.id + '">\n  <td class="name" id="food-' + food.id + '">' + food.name + '</td>\n  <td class="calories" id="cal-' + food.id + '">' + food.calories + '</td>\n  <td><button class="delete-btn" aria-label="Delete">\n  <img src="assets/trashhhh.png" alt="delete button">\n  </button></td>\n  </tr>');
+	};
+
+	var foodAppendWithDisabledDelete = function foodAppendWithDisabledDelete(food) {
+	  $('#all-foods').append('<tr id="' + food.id + '">\n  <td class="name" id="food-' + food.id + '">' + food.name + '</td>\n  <td class="calories" id="cal-' + food.id + '">' + food.calories + '</td>\n\n  </tr>');
+	};
+
+	var getEachFood = exports.getEachFood = function getEachFood(meals, foods) {
+	  var sortedFoods = sortFoods(foods);
+	  var foodsInMeals = getFoodsInMeals(meals);
 	  sortedFoods.forEach(function (food) {
 	    if ($.inArray(food.id, foodsInMeals) === -1) {
 	      foodAppendWithRegularDelete(food);
@@ -266,7 +399,7 @@
 	};
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -274,9 +407,9 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.getAllFoodsValidation = exports.getAllFoods = exports.updateFood = exports.postFood = exports.deleteFood = undefined;
+	exports.createFood = exports.getAllFoodsValidation = exports.getAllFoods = exports.updateFood = exports.postFood = exports.deleteFood = undefined;
 
-	var _domFoods = __webpack_require__(3);
+	var _domFoods = __webpack_require__(4);
 
 	var _index = __webpack_require__(1);
 
@@ -354,104 +487,15 @@
 	  });
 	};
 
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	var dayTotalCalories = function dayTotalCalories(total) {
-	  var type = void 0;
-	  if (2000 - total < 0) {
-	    type = "negative";
-	  } else {
-	    type = "positive";
-	  }
-	  $('#meal-totals').html('');
-	  $('#meal-totals').append('<tr>\n  <td>Goal Calories</td>\n  <td>2000</td>\n  </tr>\n  <tr>\n  <td>Calories Consumed</td>\n  <td>' + total + '</td>\n  </tr>\n  <tr>\n  <td>Remaining Calories</td>\n  <td class="' + type + '">' + (2000 - total) + '</td>\n  </tr>');
-	};
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.countIncrement = exports.getAllFoodsDiary = undefined;
-
-	var createFoodInMeal = function createFoodInMeal(event) {
+	var createFood = exports.createFood = function createFood(event) {
 	  event.preventDefault();
-	  var mealId = event.target.id.slice(-1);
-	  $('#all-foods-diary tr').each(function (index, row) {
-	    if (index != 0 && $(row).find(':checkbox:checked').length === 1) {
-	      var foodId = parseInt(row.id);
-	      postFoodToMeal(mealId, foodId);
-	    }
-	  });
-	  $('input[type=checkbox]').prop('checked', false);
-	};
+	  var name = $('#name').val();
+	  var calories = $('#calories').val();
 
-	var postMealConfig = function postMealConfig() {
-	  return {
-	    method: 'POST',
-	    headers: { 'Content-Type': 'application/json' }
-	  };
-	};
-
-	var postFoodToMeal = function postFoodToMeal(mealId, foodId) {
-	  fetch('http://quantifiedself-backend.herokuapp.com/api/v1/meals/' + mealId + '/foods/' + foodId, postMealConfig()).then(function () {
-	    return getAllMeals();
-	  }).catch(function (error) {
-	    return console.error({ error: error });
-	  });
-	};
-
-	var removeMealFood = function removeMealFood(event) {
-	  var $tr = event.target.parentNode.parentNode;
-	  var mealId = event.target.parentNode.parentNode.parentNode.parentNode.className.slice(-1);
-	  $tr.remove();
-	  deleteMealFood($tr.className, mealId);
-	};
-
-	var deleteMealFood = function deleteMealFood(foodId, mealId) {
-	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/meals/' + mealId + '/foods/' + foodId, { method: 'DELETE' }).then(function () {
-	    return getAllMeals();
-	  }).catch(function (error) {
-	    return console.error({ error: error });
-	  });
-	};
-
-	var count = 0;
-
-	var countIncrement = function countIncrement() {
-	  count++;
-	  if (count > 2) {
-	    count = 0;
+	  if ((0, _domFoods.validateForm)(name, calories) != false) {
+	    postFood({ name: name, calories: calories });
 	  }
-	  getAllFoodsDiary();
 	};
-
-	getAllFoodsValidation();
-	getAllFoodsDiary();
-	filterFoods();
-	getAllMeals();
-
-	var _index = __webpack_require__(1);
-
-	var getAllFoodsDiary = exports.getAllFoodsDiary = function getAllFoodsDiary() {
-	  $('#all-foods-diary').html('<tr><th>Food</th><th class=sort>Calories</th></tr>');
-	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/foods').then(function (response) {
-	    return (0, _index.handleResponse)(response);
-	  }).then(function (foods) {
-	    return (0, _domIndex.getEachFoodDiary)(count, foods);
-	  }).catch(function (error) {
-	    return console.error({ error: error });
-	  });
-	};
-
-	$('#all-foods-diary').on('click', '.sort', countIncrement);
-	$('#all-meals').on('click', '.delete-mealFood', removeMealFood);
-	$('#all-foods').on('click', '.delete-btn', removeFood);
-
-	$('#meal-1').on('click', createFoodInMeal);
-	$('#meal-2').on('click', createFoodInMeal);
-	$('#meal-3').on('click', createFoodInMeal);
-	$('#meal-4').on('click', createFoodInMeal);
 
 /***/ })
 /******/ ]);
