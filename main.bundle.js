@@ -341,7 +341,7 @@
 	};
 
 	var foodAppendWithRegularDelete = function foodAppendWithRegularDelete(food) {
-	  $('#all-foods').append('<tr id="' + food.id + '">\n  <td class="name" id="food-' + food.id + '">' + food.name + '</td>\n  <td class="calories" id="cal-' + food.id + '">' + food.calories + '</td>\n  <td><button class="delete-btn" aria-label="Delete">\n  <img src="assets/trashhhh.png" alt="delete button">\n  </button></td>\n  </tr>');
+	  $('#all-foods').append('<tr id="' + food.id + '">\n  <td class="name" id="food-' + food.id + '">' + food.name + '</td>\n  <td class="calories" id="cal-' + food.id + '">' + food.calories + '</td>\n  <td><button class="delete-btn" aria-label="Delete">\n  Delete\n  </button></td>\n  </tr>');
 	};
 
 	var foodAppendWithDisabledDelete = function foodAppendWithDisabledDelete(food) {
