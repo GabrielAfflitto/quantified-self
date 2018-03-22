@@ -3,10 +3,12 @@ body {
 }
 
 .negative {
-  color: red;
+  font-weight: bold;
+  color: #d12121;
 }
 
 .positive {
+  font-weight: bold;
   color: green;
 }
 
@@ -35,6 +37,7 @@ img {
 table td, table th {
     border: 1px solid #ddd;
     padding: 8px;
+    height: 35px;
 }
 
 table tr:nth-child(even){background-color: #f2f2f2;}
@@ -45,7 +48,7 @@ table th {
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;
-    background-color: #ed7c12;
+    background-color: #b75116;
     color: white;
 }
 
@@ -68,8 +71,8 @@ input[type=text], select {
     font-size: 16px;
 }
 
-#meal-1, #meal-2, #meal-3, #meal-4 {
-  background-color: #ed7c12;
+#meal-1, #meal-2, #meal-3, #meal-4, #add-food-btn {
+  background-color: #b75116;
   color: white;
   padding: 14px 20px;
   margin: 8px 50px 10px 0px;
