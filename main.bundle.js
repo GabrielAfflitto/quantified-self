@@ -75,7 +75,6 @@
 	        json: json
 	      };
 	      return Promise.reject(error);
-	      debugger;
 	    }
 	    return json;
 	  });
@@ -473,11 +472,6 @@
 	    postFood({ name: name, calories: calories });
 	  }
 	};
-
-	$('#meal-1').on('click', createFoodInMeal);
-	$('#meal-2').on('click', createFoodInMeal);
-	$('#meal-3').on('click', createFoodInMeal);
-	$('#meal-4').on('click', createFoodInMeal);
 
 /***/ })
 /******/ ]);
