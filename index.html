@@ -7,7 +7,7 @@
   </head>
   <body>
 
-    <a href="foods.html">Foods</a>
+    <h1> <a href="foods.html">Foods Index</a></h1>
     <div id="all-meals">
       <table class="meal-1" id="breakfast">
       </table><br>
@@ -26,22 +26,23 @@
     <table id="meal-totals">
     </table><br>
 
-    <form action="">
-      <input class="filter" type="text" name="search">
-    </form>
-    <div class="label">Filter by Name</div><br>
 
     <h3>Foods</h3>
-    <p>Add seleced to:</p>
-    <button id="meal-1" aria-label="Add Food">Breakfast</button>
-    <button id="meal-2" aria-label="Add Food">Snack</button>
-    <button id="meal-3" aria-label="Add Food">Lunch</button>
-    <button id="meal-4" aria-label="Add Food">Dinner</button>
+    <form action="">
+      <input class="filter" type="text" name="search" placeholder="Search by name...">
+    </form>
+    <h4>Add seleced to:</h4>
+    <div class="meal-buttons">
+      <button id="meal-1" aria-label="Add Food">Breakfast</button>
+      <button id="meal-2" aria-label="Add Food">Snack</button>
+      <button id="meal-3" aria-label="Add Food">Lunch</button>
+      <button id="meal-4" aria-label="Add Food">Dinner</button>
+    </div>
 
     <table id="all-foods-diary">
     </table>
 
-    <a href="foods.html">Create New</a>
+    <h3> <a href="foods.html">Create New</a></h3>
 
     <script
       src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'>
