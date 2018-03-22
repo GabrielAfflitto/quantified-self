@@ -158,7 +158,7 @@
 	    var name = meal.name.toLowerCase();
 	    var mealTotalCal = 0;
 	    meal["foods"].forEach(function (food) {
-	      $("#" + name).append("<tr class=\"" + food.id + "\">\n      <td class=\"food-" + food.id + "\">" + food.name + "</td>\n      <td class=\"calories\" class=\"cal-" + food.id + "\">" + food.calories + "</td>\n      <td><button class=\"delete-mealFood\" aria-label=\"Delete\">\n        <img src=\"assets/trashhhh.png\" alt=\"delete button\">\n      </button></td>\n      </tr>");
+	      $("#" + name).append("<tr class=\"" + food.id + "\">\n      <td class=\"food-" + food.id + "\">" + food.name + "</td>\n      <td class=\"calories\" class=\"cal-" + food.id + "\">" + food.calories + "</td>\n      <td><button class=\"delete-mealFood\" aria-label=\"Delete\">\n        Delete\n      </button></td>\n      </tr>");
 	      mealTotalCal += food.calories;
 	    });
 	    dayTotalCal += mealTotalCal;
