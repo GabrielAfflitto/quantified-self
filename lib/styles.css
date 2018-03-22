@@ -16,6 +16,16 @@ table {
 td:nth-child(3) {
   background-color: white;
   border: none;
+
+}
+
+button {
+  border: none;
+}
+
+img {
+  height: 35px;
+  width: auto;
 }
 
 table td, table th {
