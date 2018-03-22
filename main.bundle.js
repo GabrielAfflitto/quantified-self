@@ -116,7 +116,82 @@
 	  var sortedFoods = foods.sort(function (a, b) {
 	    return a.id > b.id ? -1 : 1;
 	  });
-	  var foodsInMeals = [];
+	};
+
+	(0, _serviceFoods.getAllFoodsValidation)();
+	(0, _serviceIndex.getAllFoodsDiary)();
+	(0, _domIndex.filterFoods)();
+	getAllMeals();
+
+	$('#all-foods').on('focusout', _domFoods.removeInputField);
+	$('#all-foods').on('click', 'tr td.name', _domFoods.createInputField);
+	$('#all-foods').on('click', 'tr td.calories', _domFoods.createInputField);
+
+	$('#add-food-btn').on('click', createFood);
+
+	$('#all-foods-diary').on('click', '.sort', _serviceIndex.countIncrement);
+	$('#all-meals').on('click', '.delete-mealFood', _domIndex.removeMealFood);
+	$('#all-foods').on('click', '.delete-btn', _domFoods.removeFood);
+
+	$('#meal-1').on('click', createFoodInMeal);
+	$('#meal-2').on('click', createFoodInMeal);
+	$('#meal-3').on('click', createFoodInMeal);
+	$('#meal-4').on('click', createFoodInMeal);
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.removeMealFood = exports.filterFoods = exports.getEachFoodDiary = exports.appendMeals = undefined;
+
+	var _index = __webpack_require__(1);
+
+	var mealCalories = {
+	  "breakfast": 400,
+	  "lunch": 600,
+	  "snack": 200,
+	  "dinner": 800
+	};
+
+	var remainingCaloriesClassType = function remainingCaloriesClassType(goal, total) {
+	  if (goal - total < 0) {
+	    return "negative";
+	  } else {
+	    return "positive";
+	  }
+	};
+
+	var remainingCalories = function remainingCalories(tableName, total) {
+	  var goal = mealCalories[tableName];
+	  var type = remainingCaloriesClassType(goal, total);
+	  $("#" + tableName).append("<tr>\n    <td>Remaining Calories</td>\n    <td class=\"" + type + "\">" + (goal - total) + "</td>\n  </tr>");
+	};
+
+	var dayTotalCalories = function dayTotalCalories(total) {
+	  var type = remainingCaloriesClassType(2000, total);
+	  $("#meal-totals").html('');
+	  $("#meal-totals").append("<tr>\n  <td>Goal Calories</td>\n  <td>2000</td>\n  </tr>\n  <tr>\n  <td>Calories Consumed</td>\n  <td>" + total + "</td>\n  </tr>\n  <tr>\n  <td>Remaining Calories</td>\n  <td class=\"" + type + "\">" + (2000 - total) + "</td>\n  </tr>");
+	};
+
+	var mealTotalCalories = function mealTotalCalories(tableName, total) {
+	  $("#" + tableName).append("<tr>\n  <td>Total Calories</td>\n  <td>" + total + "</td>\n  </tr>");
+	};
+
+	var appendMealsTableHead = function appendMealsTableHead() {
+	  $('#breakfast').html('<h3>Breakfast</h3><tr><th>Name</th><th>Calories</th></tr>');
+	  $('#snack').html('<h3>Snacks</h3><tr><th>Name</th><th>Calories</th></tr>');
+	  $('#lunch').html('<h3>Lunch</h3><tr><th>Name</th><th>Calories</th></tr>');
+	  $('#dinner').html('<h3>Dinner</h3><tr><th>Name</th><th>Calories</th></tr>');
+	};
+
+	var appendMeals = exports.appendMeals = function appendMeals(meals) {
+	  var dayTotalCal = 0;
+	  appendMealsTableHead();
 	  meals.forEach(function (meal) {
 	    meal["foods"].forEach(function (food) {
 	      foodsInMeals.push(food.id);
