@@ -266,7 +266,7 @@
 	};
 
 	var postFoodToMeal = exports.postFoodToMeal = function postFoodToMeal(mealId, foodId) {
-	  fetch('http://quantifiedself-backend.herokuapp.com/api/v1/meals/' + mealId + '/foods/' + foodId, postMealConfig()).then(function () {
+	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/meals/' + mealId + '/foods/' + foodId, postMealConfig()).then(function () {
 	    return getAllMeals();
 	  }).catch(function (error) {
 	    return console.error({ error: error });
