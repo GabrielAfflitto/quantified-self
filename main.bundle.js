@@ -156,44 +156,30 @@
 	  var dayTotalCal = 0;
 	  appendMealsTableHead();
 	  meals.forEach(function (meal) {
+	    var name = meal.name.toLowerCase();
+	    var mealTotalCal = 0;
 	    meal["foods"].forEach(function (food) {
 	      $("#" + name).append("<tr class=\"" + food.id + "\">\n      <td class=\"food-" + food.id + "\">" + food.name + "</td>\n      <td class=\"calories\" class=\"cal-" + food.id + "\">" + food.calories + "</td>\n      <td><button class=\"delete-mealFood\" aria-label=\"Delete\">\n        <img src=\"assets/trashhhh.png\" alt=\"delete button\">\n      </button></td>\n      </tr>");
 	      mealTotalCal += food.calories;
 	    });
+	    dayTotalCal += mealTotalCal;
+	    mealTotalCalories(name, mealTotalCal);
+	    remainingCalories(name, mealTotalCal);
 	  });
-	  sortedFoods.forEach(function (food) {
-	    if ($.inArray(food.id, foodsInMeals) === -1) {
-	      $('#all-foods').append('<tr id="' + food.id + '">\n        <td class="name" id="food-' + food.id + '">' + food.name + '</td>\n        <td class="calories" id="cal-' + food.id + '">' + food.calories + '</td>\n        <td><button class="delete-btn" aria-label="Delete">\n        Delete\n        </button></td>\n        </tr>');
-	    } else {
-	      $('#all-foods').append('<tr id="' + food.id + '">\n        <td class="name" id="food-' + food.id + '">' + food.name + '</td>\n        <td class="calories" id="cal-' + food.id + '">' + food.calories + '</td>\n        <td><button class="delete-btn" aria-label="Delete" disabled>\n        Delete\n        </button></td>\n        </tr>');
-	    }
-	  });
-	  return foodsInMeals;
+	  dayTotalCalories(dayTotalCal);
 	};
 
-	var getAllFoodsDiary = function getAllFoodsDiary() {
-	  $('#all-foods-diary').html('<tr><th>Food</th><th class=sort>Calories</th></tr>');
-	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/foods').then(function (response) {
-	    return handleResponse(response);
-	  }).then(function (foods) {
-	    return getEachFoodDiary(foods);
-	  }).catch(function (error) {
-	    return console.error({ error: error });
-	  });
-	};
-
-	var getEachFoodDiary = function getEachFoodDiary(foods) {
-	  var sortedFoods = void 0;
+	var determineSortedFoods = function determineSortedFoods(count, foods) {
 	  if (count === 1) {
-	    sortedFoods = foods.sort(function (a, b) {
+	    return foods.sort(function (a, b) {
 	      return a.calories < b.calories ? -1 : 1;
 	    });
 	  } else if (count === 2) {
-	    sortedFoods = foods.sort(function (a, b) {
+	    return foods.sort(function (a, b) {
 	      return a.calories > b.calories ? -1 : 1;
 	    });
 	  } else {
-	    sortedFoods = foods.sort(function (a, b) {
+	    return foods.sort(function (a, b) {
 	      return a.id > b.id ? -1 : 1;
 	    });
 	  }
@@ -468,22 +454,13 @@
 	  });
 	};
 
-	var appendMeals = function appendMeals(meals) {
-	  var dayTotalCal = 0;
-	  $('#breakfast').html('<caption>Breakfast</caption><tr><th>Name</th><th>Calories</th></tr>');
-	  $('#snack').html('<caption>Snacks</caption><tr><th>Name</th><th>Calories</th></tr>');
-	  $('#lunch').html('<caption>Lunch</caption><tr><th>Name</th><th>Calories</th></tr>');
-	  $('#dinner').html('<caption>Dinner</caption><tr><th>Name</th><th>Calories</th></tr>');
-	  meals.forEach(function (meal) {
-	    var name = meal.name.toLowerCase();
-	    var mealTotalCal = 0;
-	    meal["foods"].forEach(function (food) {
-	      $('#' + name).append('<tr class="' + food.id + '">\n      <td class="food-' + food.id + '">' + food.name + '</td>\n      <td class="calories" class="cal-' + food.id + '">' + food.calories + '</td>\n      <td><button class="delete-mealFood" aria-label="Delete">\n      Delete\n      </button></td>\n      </tr>');
-	      mealTotalCal += food.calories;
-	    });
-	    dayTotalCal += mealTotalCal;
-	    mealTotalCalories(name, mealTotalCal);
-	    remainingCalories(name, mealTotalCal);
+	var getAllFoodsValidation = exports.getAllFoodsValidation = function getAllFoodsValidation() {
+	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/meals').then(function (response) {
+	    return (0, _index.handleResponse)(response);
+	  }).then(function (meals) {
+	    return getAllFoods(meals);
+	  }).catch(function (error) {
+	    return console.error({ error: error });
 	  });
 	};
 
