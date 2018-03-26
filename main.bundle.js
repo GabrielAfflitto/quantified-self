@@ -236,7 +236,7 @@
 
 	var getAllFoodsDiary = exports.getAllFoodsDiary = function getAllFoodsDiary() {
 	  $('#all-foods-diary').html('<tr><th>Food</th><th class=sort>Calories</th></tr>');
-	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/foods').then(function (response) {
+	  fetch('https://quantified-self-express.herokuapp.com/api/v1/foods').then(function (response) {
 	    return (0, _index.handleResponse)(response);
 	  }).then(function (foods) {
 	    return (0, _domIndex.getEachFoodDiary)(count, foods);
@@ -256,7 +256,7 @@
 	};
 
 	var getAllMeals = exports.getAllMeals = function getAllMeals() {
-	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/meals').then(function (response) {
+	  fetch('https://quantified-self-express.herokuapp.com/api/v1/meals').then(function (response) {
 	    return (0, _index.handleResponse)(response);
 	  }).then(function (meals) {
 	    return (0, _domIndex.appendMeals)(meals);
@@ -266,7 +266,7 @@
 	};
 
 	var postFoodToMeal = exports.postFoodToMeal = function postFoodToMeal(mealId, foodId) {
-	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/meals/' + mealId + '/foods/' + foodId, postMealConfig()).then(function () {
+	  fetch('https://quantified-self-express.herokuapp.com/api/v1/meals/' + mealId + '/foods/' + foodId, postMealConfig()).then(function () {
 	    return getAllMeals();
 	  }).catch(function (error) {
 	    return console.error({ error: error });
@@ -281,7 +281,7 @@
 	};
 
 	var deleteMealFood = exports.deleteMealFood = function deleteMealFood(foodId, mealId) {
-	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/meals/' + mealId + '/foods/' + foodId, { method: 'DELETE' }).then(function () {
+	  fetch('https://quantified-self-express.herokuapp.com/api/v1/meals/' + mealId + '/foods/' + foodId, { method: 'DELETE' }).then(function () {
 	    return getAllMeals();
 	  }).catch(function (error) {
 	    return console.error({ error: error });
@@ -399,7 +399,7 @@
 	var _index = __webpack_require__(1);
 
 	var deleteFood = exports.deleteFood = function deleteFood(id) {
-	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/foods/' + id, { method: 'DELETE' }).catch(function (error) {
+	  fetch('https://quantified-self-express.herokuapp.com/api/v1/foods/' + id, { method: 'DELETE' }).catch(function (error) {
 	    return console.error({ error: error });
 	  });
 	};
@@ -413,7 +413,7 @@
 	};
 
 	var postFood = exports.postFood = function postFood(body) {
-	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/foods', postConfig(body)).then(function (response) {
+	  fetch('https://quantified-self-express.herokuapp.com/api/v1/foods', postConfig(body)).then(function (response) {
 	    return (0, _index.handleResponse)(response);
 	  }).then(function () {
 	    return (0, _domFoods.removeValidations)();
@@ -435,7 +435,7 @@
 	};
 
 	var updateFood = exports.updateFood = function updateFood(body, id) {
-	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/foods/' + id, patchConfig(body)).then(function (response) {
+	  fetch('https://quantified-self-express.herokuapp.com/api/v1/foods/' + id, patchConfig(body)).then(function (response) {
 	    return (0, _index.handleResponse)(response);
 	  }).catch(function (error) {
 	    return console.error({ error: error });
@@ -444,7 +444,7 @@
 
 	var getAllFoods = exports.getAllFoods = function getAllFoods(meals) {
 	  $('#all-foods').html('<tr><th>Food</th><th>Calories</th></tr>');
-	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/foods').then(function (response) {
+	  fetch('https://quantified-self-express.herokuapp.com/api/v1/foods').then(function (response) {
 	    return (0, _index.handleResponse)(response);
 	  }).then(function (foods) {
 	    return (0, _domFoods.getEachFood)(meals, foods);
@@ -454,7 +454,7 @@
 	};
 
 	var getAllFoodsValidation = exports.getAllFoodsValidation = function getAllFoodsValidation() {
-	  fetch('https://quantifiedself-backend.herokuapp.com/api/v1/meals').then(function (response) {
+	  fetch('https://quantified-self-express.herokuapp.com/api/v1/meals').then(function (response) {
 	    return (0, _index.handleResponse)(response);
 	  }).then(function (meals) {
 	    return getAllFoods(meals);
