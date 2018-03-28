@@ -1,38 +1,38 @@
-<!DOCTYPE html>
-<html lang="en-us" role="main">
-<head>
-  <meta charset="utf-8">
-  <title>Quantified Self - Manage Foods</title>
-  <link rel="stylesheet" href="lib/styles.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
-<body>
-  
-  <h1> <a href="index.html">Manage Diary</a></h1>
-  
-  <form action="">
-    <input class="filter" type="text" name="search" placeholder="Search by name.." aria-label="search for foods">
-  </form>
+  <!DOCTYPE html>
+  <html lang="en-us" role="main">
+  <head>
+    <meta charset="utf-8">
+    <title>Quantified Self - Manage Foods</title>
+    <link rel="stylesheet" href="lib/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
 
-  <table id="all-foods">
-    <tr>
-      <th>Food</th>
-      <th>Calories</th>
-    </tr>
-  </table>
+    <h1><a href="index.html">Manage Diary</a></h1>
 
-  <form class="form-container" method="post" action="">
-    <label for="name">
-      <input id="name" type="text" placeholder="Name of Food"  aria-required="true" aria-label="create food">
-    </label>
-    <label for="calories">
-      <input id="calories" type="text" placeholder="Calories of Food"  aria-required="true" aria-label="create food">
-    </label>
-    <button id="add-food-btn" aria-label="Add Food">Add Food</button>
-  </form>
-  <script
+    <form action="">
+      <input class="filter" type="text" name="search" placeholder="Search by name.." aria-label="search for foods">
+    </form>
+
+    <table id="all-foods">
+      <tr>
+        <th>Food</th>
+        <th>Calories</th>
+      </tr>
+    </table>
+
+    <form class="form-container" method="post" action="">
+      <label for="name">
+        <input id="name" type="text" placeholder="Name of Food" aria-required="true" aria-label="create food">
+      </label>
+      <label for="calories">
+        <input id="calories" type="text" placeholder="Calories of Food" aria-required="true" aria-label="create food">
+      </label>
+      <button id="add-food-btn" aria-label="Add Food">Add Food</button>
+    </form>
+    <script
     src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'>
-  </script>
-  <script src="main.bundle.js"></script>
-</body>
-</html>
+    </script>
+    <script src="main.bundle.js"></script>
+  </body>
+  </html>
